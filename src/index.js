@@ -50,8 +50,8 @@ export default class WebSocketStream extends Duplex {
     })
 
     socket.addEventListener('message', (msg) => {
-      let data = (semver.lt(NODE_VER, '6.0.0')) ?
-        new Buffer(new Uint8Array(msg.data)) : Buffer.from(msg.data)
+      let data = (semver.lt(NODE_VER, '6.0.0'))
+        ? new Buffer(new Uint8Array(msg.data)) : Buffer.from(msg.data)
       switch (data[0]) {
         case DATA:
           this._started = true
@@ -88,8 +88,8 @@ export default class WebSocketStream extends Duplex {
   }
 
   _send (code, data) {
-    let type = (semver.lt(NODE_VER, '6.0.0')) ?
-      new Buffer(new Uint8Array([code])) : Buffer.from([code])
+    let type = (semver.lt(NODE_VER, '6.0.0'))
+      ? new Buffer(new Uint8Array([code])) : Buffer.from([code])
     this.socket.send(data ? Buffer.concat([type, data]) : type)
   }
 }

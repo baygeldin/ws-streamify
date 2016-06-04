@@ -42,8 +42,8 @@ describe('ws-streamify', () => {
     let stream0 = new WebSocketStream(socket0, options)
     let stream1 = new WebSocketStream(socket1, options)
     // let's write a big chunk
-    let data = (semver.lt(process.version, '5.10.0')) ?
-      new Buffer(2048) : Buffer.alloc(2048) // 2Kb
+    let data = (semver.lt(process.version, '5.10.0'))
+      ? new Buffer(2048) : Buffer.alloc(2048) // 2Kb
     stream0.write(data)
     stream1.once('readable', () => {
       // the stream1 read buffer is overwhelmed
