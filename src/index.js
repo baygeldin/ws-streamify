@@ -1,6 +1,7 @@
 import { Duplex } from 'stream'
 import assert from 'assert'
 import createDebugger from 'debug'
+import semver from 'semver'
 import codes from './codes'
 
 const { DATA, ACK, END } = codes
@@ -46,7 +47,8 @@ export default class WebSocketStream extends Duplex {
     })
 
     socket.addEventListener('message', (msg) => {
-      let data = Buffer.from ? Buffer.from(msg.data) : new Buffer(msg.data)
+      let data = (semver.lt(process.version, '6.0.0')) ?
+        new Buffer(new Uint8Array(msg.data)) : Buffer.from(msg.data)
       switch (data[0]) {
         case DATA:
           this._started = true
@@ -83,7 +85,8 @@ export default class WebSocketStream extends Duplex {
   }
 
   _send (code, data) {
-    let type = Buffer.from ? Buffer.from([code]) : new Buffer([code])
+    let type = (semver.lt(process.version, '6.0.0')) ?
+      new Buffer(new Uint8Array([code])) : Buffer.from([code])
     this.socket.send(data ? Buffer.concat([type, data]) : type)
   }
 }

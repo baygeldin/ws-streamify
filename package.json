@@ -32,6 +32,9 @@
   "homepage": "https://github.com/baygeldin/ws-streamify#readme",
   "author": "Alexander Baygeldin",
   "license": "MPL-2.0",
+  "engines": {
+    "node": ">=0.12.13"
+  },
   "devDependencies": {
     "babel-cli": "^6.8.0",
     "babel-core": "^6.8.0",
@@ -51,6 +54,7 @@
     "parser": "babel-eslint"
   },
   "dependencies": {
-    "debug": "^2.2.0"
+    "debug": "^2.2.0",
+    "semver": "^5.1.0"
   }
 }

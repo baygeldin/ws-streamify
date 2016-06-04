@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 
+import semver from 'semver'
 import { expect } from 'chai'
 import WebSocketStream from '../lib'
 import WebSocket from 'ws'
@@ -41,7 +42,9 @@ describe('ws-streamify', () => {
     let stream0 = new WebSocketStream(socket0, options)
     let stream1 = new WebSocketStream(socket1, options)
     // let's write a big chunk
-    stream0.write(Buffer.alloc(2048)) // 2kb
+    let data = (semver.lt(process.version, '5.10.0')) ?
+      new Buffer(2048) : Buffer.alloc(2048) // 2Kb
+    stream0.write(data)
     stream1.once('readable', () => {
       // the stream1 read buffer is overwhelmed
       // as well as the stream0 write buffer
