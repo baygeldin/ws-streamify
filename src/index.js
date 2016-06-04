@@ -6,6 +6,9 @@ import codes from './codes'
 
 const { DATA, ACK, END } = codes
 
+// Browser polyfills have support for 6.0.0
+const NODE_VER = process.version || '6.0.0'
+
 let debug = createDebugger('ws-streamify')
 
 export default class WebSocketStream extends Duplex {
@@ -47,7 +50,7 @@ export default class WebSocketStream extends Duplex {
     })
 
     socket.addEventListener('message', (msg) => {
-      let data = (semver.lt(process.version, '6.0.0')) ?
+      let data = (semver.lt(NODE_VER, '6.0.0')) ?
         new Buffer(new Uint8Array(msg.data)) : Buffer.from(msg.data)
       switch (data[0]) {
         case DATA:
@@ -85,7 +88,7 @@ export default class WebSocketStream extends Duplex {
   }
 
   _send (code, data) {
-    let type = (semver.lt(process.version, '6.0.0')) ?
+    let type = (semver.lt(NODE_VER, '6.0.0')) ?
       new Buffer(new Uint8Array([code])) : Buffer.from([code])
     this.socket.send(data ? Buffer.concat([type, data]) : type)
   }
