@@ -7,7 +7,7 @@
     "prepublish": "npm run test && npm run lint && npm run release",
     "postpublish": "npm run clean",
     "test": "npm run build && DEBUG=ws-streamify mocha",
-    "start": "npm run bundle && DEBUG=ws-streamify babel-node example/server.js",
+    "start": "npm run build && npm run bundle && DEBUG=ws-streamify babel-node example/server.js",
     "bundle": "browserify example/script.js -o example/bundle.js -t [ babelify ]",
     "build": "babel src/ -d lib --source-maps --copy-files",
     "watch": "npm run build -- --watch",

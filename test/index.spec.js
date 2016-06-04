@@ -10,10 +10,6 @@ describe('ws-streamify', () => {
   let socket0
   let socket1
 
-  after(() => {
-    wss.close()
-  })
-
   beforeEach((done) => {
     socket0 = new WebSocket('ws://localhost:' + port)
     socket0.once('open', done)
@@ -47,16 +43,12 @@ describe('ws-streamify', () => {
     // let's write a big chunk
     stream0.write(Buffer.alloc(2048)) // 2kb
     stream1.once('readable', () => {
-      // the stream1 buffer is overwhelmed
-      // and it asks stream0 to stop sending data
+      // the stream1 read buffer is overwhelmed
+      // as well as the stream0 write buffer
+      expect(stream0.write('sorry, not this time')).to.equal(false)
       // however, stream1 itself still can send data
       expect(stream1.write('because I can')).to.equal(true)
       stream0.once('readable', () => {
-        // but stream0 can't since the stream1 buffer is full
-        // however, it can fill its internal buffer
-        expect(stream0.write(Buffer.alloc(512))).to.equal(true)
-        // ...but no more than its highWaterMark
-        expect(stream0.write(Buffer.alloc(1024))).to.equal(false)
         // so, let's flush the stream1 buffer
         stream1.resume()
         // the stream1 buffer is now empty
