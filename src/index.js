@@ -24,7 +24,7 @@ export default class WebSocketStream extends Duplex {
 
     this.on('finish', () => {
       debug(`${this.socket._name}: I'm done`)
-      socket.send(Buffer.from([END]))
+      this._send(END)
     })
 
     // Buffer data until connection is established
@@ -46,7 +46,7 @@ export default class WebSocketStream extends Duplex {
     })
 
     socket.addEventListener('message', (msg) => {
-      let data = Buffer.from(msg.data)
+      let data = Buffer.from ? Buffer.from(msg.data) : new Buffer(msg.data)
       switch (data[0]) {
         case DATA:
           this._started = true
@@ -71,14 +71,19 @@ export default class WebSocketStream extends Duplex {
 
   _write (chunk, encoding, callback) {
     debug(`${this.socket._name}: hey, I'm sending a data`)
-    this.socket.send(Buffer.concat([Buffer.from([DATA]), chunk]))
+    this._send(DATA, chunk)
     this._cb = callback
   }
 
   _read (size) {
     if (this._started) {
       debug(`${this.socket._name}: go ahead, send some more`)
-      this.socket.send(Buffer.from([ACK]))
+      this._send(ACK)
     }
+  }
+
+  _send (code, data) {
+    let type =  Buffer.from ? Buffer.from([code]) : new Buffer([code])
+    this.socket.send(data ? Buffer.concat([type, data]) : type)
   }
 }
