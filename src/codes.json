@@ -1,0 +1,6 @@
+{
+  "DATA": 0,
+  "RESUME": 1,
+  "PAUSE": 2,
+  "END": 3
+}

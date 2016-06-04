@@ -37,6 +37,8 @@ node_modules
 [._]s[a-w][a-z]
 Session.vim
 
-# Build results
-lib
-example/bundle.js
+# Unneeded files
+test
+example
+.babelrc
+.editorconfig
