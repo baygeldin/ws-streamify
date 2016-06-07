@@ -1,6 +1,5 @@
 {
   "DATA": 0,
   "ACK": 1,
-  "DRAIN": 2,
-  "END": 3
+  "END": 2
 }
