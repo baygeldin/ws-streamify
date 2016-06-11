@@ -67,6 +67,20 @@ describe('ws-streamify', () => {
     })
   })
 
+  it('merges pending buffers', (done) => {
+    let stream0 = new WebSocketStream(socket0)
+    let stream1 = new WebSocketStream(socket1)
+    stream0.cork()
+    stream0.write('hello ')
+    stream0.write('world')
+    stream0.uncork()
+    stream1.once('data', (data) => {
+      expect(data.toString()).to.equal('hello world')
+      stream0.end()
+      stream1.once('end', done)
+    })
+  })
+
   it('fires close event when connection closes', (done) => {
     let stream1 = new WebSocketStream(socket1)
     socket0.close()
