@@ -1,6 +1,6 @@
 {
   "name": "ws-streamify",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Pipe Node.js streams over WebSockets (with back-pressure!).",
   "main": "lib/index.js",
   "scripts": {
