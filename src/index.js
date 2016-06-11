@@ -6,7 +6,7 @@ import codes from './codes'
 
 const { DATA, ACK, END } = codes
 
-const OLD_BUFFER = !global.window || semver.lt(process.version, '6.0.0')
+const OLD_BUFFER = !global.window && semver.lt(process.version, '6.0.0')
 
 let debug = createDebugger('ws-streamify')
 
@@ -53,6 +53,7 @@ export default class WebSocketStream extends Duplex {
         ? new Buffer(new Uint8Array(msg.data)) : Buffer.from(msg.data)
       switch (data[0]) {
         case DATA:
+          this._started = true
           if (!this.push(data.slice(1))) {
             // Note that this will execute after
             // all callbacks on 'readable' and 'data' events.
@@ -90,8 +91,6 @@ export default class WebSocketStream extends Duplex {
     if (this._started) {
       debug(`${this.socket._name}: go ahead, send some more`)
       this._send(ACK)
-    } else {
-      this._started = true
     }
   }
 
