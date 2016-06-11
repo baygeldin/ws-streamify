@@ -6,8 +6,7 @@ import codes from './codes'
 
 const { DATA, ACK, END } = codes
 
-// Browser polyfills have support for 6.0.0
-const NODE_VER = process.version || '6.0.0'
+const OLD_BUFFER = !global.window || semver.lt(process.version, '6.0.0')
 
 let debug = createDebugger('ws-streamify')
 
@@ -50,11 +49,10 @@ export default class WebSocketStream extends Duplex {
     })
 
     socket.addEventListener('message', (msg) => {
-      let data = (semver.lt(NODE_VER, '6.0.0'))
+      let data = OLD_BUFFER
         ? new Buffer(new Uint8Array(msg.data)) : Buffer.from(msg.data)
       switch (data[0]) {
         case DATA:
-          this._started = true
           if (!this.push(data.slice(1))) {
             // Note that this will execute after
             // all callbacks on 'readable' and 'data' events.
@@ -88,14 +86,17 @@ export default class WebSocketStream extends Duplex {
   }
 
   _read (size) {
+    // Let's not send the first ACK, since it's redundant
     if (this._started) {
       debug(`${this.socket._name}: go ahead, send some more`)
       this._send(ACK)
+    } else {
+      this._started = true
     }
   }
 
   _send (code, data) {
-    let type = (semver.lt(NODE_VER, '6.0.0'))
+    let type = OLD_BUFFER
       ? new Buffer(new Uint8Array([code])) : Buffer.from([code])
     this.socket.send(data ? Buffer.concat([type, data]) : type)
   }
