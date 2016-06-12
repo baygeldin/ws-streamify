@@ -12,7 +12,7 @@ WebSockets is a messenging protocol built over TCP. It's very simple and very go
 ```
 $ npm install ws-streamify
 ```
-It has support for Node.js >= 0.12. Almost zero dependencies (for browsers, however, it requires polyfills for some Node.js core libraries which is not a problem with webpack of browserify).
+It has support for Node.js >= 0.12. Almost zero dependencies (for browsers, however, it requires polyfills for some Node.js core libraries which is not a problem with webpack or browserify).
 
 ## Usage
 ```javascript
