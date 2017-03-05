@@ -33,22 +33,22 @@ export default class WebSocketStream extends Duplex {
     // Buffer data until connection is established
     if (socket.readyState !== socket.OPEN) this.cork()
 
-    socket.addEventListener('open', () => {
+    socket.onopen = () => {
       debug(`${this.socket._name}: okay, I'm ready`)
       this.uncork()
-    })
+    }
 
-    socket.addEventListener('close', (code, msg) => {
+    socket.onclose = (code, msg) => {
       debug(`${this.socket._name}: I've lost the connection`)
       this.emit('close', code, msg)
-    })
+    }
 
-    socket.addEventListener('error', (err) => {
+    socket.onerror = (err) => {
       debug(`${this.socket._name}: uh oh, error!`)
       this.emit('error', err)
-    })
+    }
 
-    socket.addEventListener('message', (msg) => {
+    socket.onmessage = (msg) => {
       let data = OLD_BUFFER
         ? new Buffer(new Uint8Array(msg.data)) : Buffer.from(msg.data)
       switch (data[0]) {
@@ -70,7 +70,7 @@ export default class WebSocketStream extends Duplex {
         default:
           throw new Error('Unsupported message type')
       }
-    })
+    }
   }
 
   _writev (chunks, callback) {
