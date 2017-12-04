@@ -75,7 +75,8 @@ export default class WebSocketStream extends Duplex {
 
   _writev (chunks, callback) {
     debug(`${this.socket._name}: hey, I'm sending you all buffered data`)
-    let chunk = chunks.reduce((prev, next) => Buffer.concat([prev.chunk, next.chunk]))
+    let chunk = chunks.reduce((prev, next) =>
+      Buffer.concat([prev.chunk, next.chunk].filter((b) => b)))
     this._send(DATA, chunk)
     this._cb = callback
   }
