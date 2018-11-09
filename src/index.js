@@ -7,6 +7,7 @@ import codes from './codes'
 const { DATA, ACK, END } = codes
 
 const OLD_BUFFER = !global.window && semver.lt(process.version, '6.0.0')
+const WEBSOCKET_STATE_OPEN = 1
 
 let debug = createDebugger('ws-streamify')
 
@@ -96,8 +97,10 @@ export default class WebSocketStream extends Duplex {
   }
 
   _send (code, data) {
-    let type = OLD_BUFFER
-      ? new Buffer(new Uint8Array([code])) : Buffer.from([code])
-    this.socket.send(data ? Buffer.concat([type, data]) : type)
+    if (this.socket.readyState === WEBSOCKET_STATE_OPEN) {
+      let type = OLD_BUFFER
+        ? new Buffer(new Uint8Array([code])) : Buffer.from([code])
+      this.socket.send(data ? Buffer.concat([type, data]) : type)
+    }
   }
 }
