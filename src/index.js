@@ -96,8 +96,10 @@ export default class WebSocketStream extends Duplex {
   }
 
   _send (code, data) {
-    let type = OLD_BUFFER
-      ? new Buffer(new Uint8Array([code])) : Buffer.from([code])
-    this.socket.send(data ? Buffer.concat([type, data]) : type)
+    if (this.socket.readyState === this.socket.OPEN) {
+      let type = OLD_BUFFER
+        ? new Buffer(new Uint8Array([code])) : Buffer.from([code])
+      this.socket.send(data ? Buffer.concat([type, data]) : type)
+    }
   }
 }
